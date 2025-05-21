@@ -17,27 +17,38 @@ ghost predicate Ordenado(a:array<int>)
 }
 
 method BubbleSort(a:array<int>)
+ modifies a
  ensures Ordenado(a)
  ensures Permutacao(a[..], old(a[..]))
+ {
+    var n := a.Length;
+    var i := 0;
+    
+    while i < n
+    {
+        var swapped := false;
+        var j := 0;
+        
+        while j < n - i - 1 
+        {
+            if a[j] > a[j+1]
+            {
+                a[j], a[j+1] := a[j+1], a[j];
+                swapped := true;
+                j := j + 1;
+            }
+        }
+        
+        if !swapped
+        {
+            break;
+        }
+        
+        i := i + 1;
+    }
+ }
  
- modifies a
+ 
 
 
 
-
-
-// def bubble_sort(arr):
-method bubbleSort(arr:array<int>)
-  // n = len(arr)0
-  var n := arr.Length
-
-  // for i in range(n):
-  // forall k: int :: 0 <= k < a.Length ==> 0 < a[k]
-  forall i: 0 <= i < n ==> 0 < arr[i]
-    invariant
-    // for j in range(0, n-i-1):
-    forall j: 0 <= j < n-i-1 ==> 0 < arr[j]
-        invariant
-        // if arr[j] > arr[j+1]:
-        if arr[j] > arr[j+1]
-            arr[j], arr[j+1] := arr[j+1], arr[j]
