@@ -1,0 +1,66 @@
+class {:autocontracts} Celula
+{
+    var dados : int
+    constructor()
+        ensures dados == 0
+    {
+        dados := 0;
+    }
+}
+
+class {:autocontracts} Contador
+{
+    ghost var valor:int
+
+    var incs:Celula
+    var decs:Celula
+
+    ghost predicate Valid()
+    {
+        && incs != decs
+        && incs.dados >= 0
+        && decs.dados >= 0
+        && valor == incs.dados - decs.dados
+    }
+
+    constructor()
+        ensures valor == 0
+    {
+        incs := new Celula(); 
+        decs := new Celula();
+        valor := 0;
+    }
+
+    method Incrementar()
+        ensures valor == old(valor) + 1
+    {
+        incs.dados := incs.dados + 1;
+        valor := valor + 1;
+    }
+
+    method Decrementar()
+        ensures valor == old(valor) - 1
+    {
+        decs.dados := decs.dados + 1;
+        valor := valor - 1;
+    }
+    
+
+    function GetValor():int
+        ensures GetValor() == valor
+    {
+        incs.dados - decs.dados
+    }
+
+        
+}
+
+method Main()
+{
+    var c := new Contador();
+    c.Incrementar();
+    c.Incrementar();
+    c.Decrementar();
+    assert c.GetValor() == 1;
+
+}
